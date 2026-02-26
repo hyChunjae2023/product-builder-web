@@ -1,7 +1,23 @@
+:root {
+    --bg-color-light: #f0f0f0;
+    --text-color-light: #333;
+    --container-bg-light: rgba(255, 255, 255, 0.8);
+    --container-border-light: rgba(0, 0, 0, 0.1);
+    --h1-shadow-light: 0 0 10px rgba(0, 0, 0, 0.2);
+
+    --bg-color-dark: #1f2023;
+    --text-color-dark: #fff;
+    --container-bg-dark: rgba(0, 0, 0, 0.25);
+    --container-border-dark: rgba(255, 255, 255, 0.1);
+    --h1-shadow-dark: 0 0 10px rgba(73, 198, 229, 0.5),
+                      0 0 20px rgba(73, 198, 229, 0.5),
+                      0 0 40px rgba(73, 198, 229, 0.5);
+}
+
 body {
     font-family: 'Montserrat', sans-serif;
-    background: #1f2023;
-    color: #fff;
+    background: var(--bg-color-dark);
+    color: var(--text-color-dark);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -10,15 +26,52 @@ body {
     text-align: center;
     background-image: radial-gradient(circle at top right, rgba(121, 68, 154, 0.15), transparent),
                       radial-gradient(circle at bottom left, rgba(45, 128, 208, 0.15), transparent);
+    transition: background 0.3s, color 0.3s;
+}
+
+body.light-mode {
+    background: var(--bg-color-light);
+    color: var(--text-color-light);
+    background-image: none;
+}
+
+.theme-switcher-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+#theme-switcher {
+    background: #49c6e5;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(73, 198, 229, 0.6);
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+#theme-switcher:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(73, 198, 229, 0.8);
 }
 
 .container {
     padding: 40px;
     border-radius: 20px;
-    background: rgba(0, 0, 0, 0.25);
+    background: var(--container-bg-dark);
     box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid var(--container-border-dark);
     backdrop-filter: blur(10px);
+    transition: background 0.3s, border 0.3s;
+}
+
+body.light-mode .container {
+    background: var(--container-bg-light);
+    border: 1px solid var(--container-border-light);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
 h1 {
@@ -26,9 +79,12 @@ h1 {
     margin-bottom: 20px;
     font-weight: 700;
     letter-spacing: 2px;
-    text-shadow: 0 0 10px rgba(73, 198, 229, 0.5),
-                 0 0 20px rgba(73, 198, 229, 0.5),
-                 0 0 40px rgba(73, 198, 229, 0.5);
+    text-shadow: var(--h1-shadow-dark);
+    transition: text-shadow 0.3s;
+}
+
+body.light-mode h1 {
+    text-shadow: var(--h1-shadow-light);
 }
 
 #generator-btn {
