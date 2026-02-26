@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제휴 문의 - Lotto Number Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="theme-switcher-container">
+        <button id="theme-switcher">Toggle Mode</button>
+    </div>
+
+    <div class="container contact-section">
+        <h2>제휴 문의</h2>
+        <p style="margin-bottom: 30px; opacity: 0.8;">제휴 및 협력 제안을 남겨주시면 검토 후 연락드리겠습니다.</p>
+        <form action="https://formspree.io/f/mnjbwzdq" method="POST" id="contact-form">
+            <div class="form-group">
+                <label for="name">이름</label>
+                <input type="text" name="name" id="name" required placeholder="성함을 입력해주세요">
+            </div>
+            <div class="form-group">
+                <label for="email">이메일</label>
+                <input type="email" name="_replyto" id="email" required placeholder="이메일 주소를 입력해주세요">
+            </div>
+            <div class="form-group">
+                <label for="message">문의 내용</label>
+                <textarea name="message" id="message" required placeholder="문의하실 내용을 입력해주세요" rows="8"></textarea>
+            </div>
+            <button type="submit" id="submit-btn">보내기</button>
+        </form>
+        <div style="margin-top: 30px;">
+            <a href="index.html" class="back-link">← 메인으로 돌아가기</a>
+        </div>
+    </div>
+
+    <div class="container comments-section">
+        <h3>댓글</h3>
+        <div id="disqus_thread"></div>
+        <script>
+            /**
+            *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+            *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+            /*
+            var disqus_config = function () {
+            this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+            };
+            */
+            (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://productbuilder-hc5yza4rkv.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>

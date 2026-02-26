@@ -54,27 +54,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     customElements.define('lotto-ball', LottoBall);
 
-    document.getElementById('generator-btn').addEventListener('click', () => {
-        const lottoNumbersContainer = document.getElementById('lotto-numbers-container');
-        lottoNumbersContainer.innerHTML = '';
-        const numbers = new Set();
-        while (numbers.size < 6) {
-            const randomNumber = Math.floor(Math.random() * 45) + 1;
-            numbers.add(randomNumber);
-        }
-        
-        const sortedNumbers = Array.from(numbers).sort((a, b) => a - b);
+    const generatorBtn = document.getElementById('generator-btn');
+    if (generatorBtn) {
+        generatorBtn.addEventListener('click', () => {
+            const lottoNumbersContainer = document.getElementById('lotto-numbers-container');
+            lottoNumbersContainer.innerHTML = '';
+            const numbers = new Set();
+            while (numbers.size < 6) {
+                const randomNumber = Math.floor(Math.random() * 45) + 1;
+                numbers.add(randomNumber);
+            }
+            
+            const sortedNumbers = Array.from(numbers).sort((a, b) => a - b);
 
-        const colors = ['#e74c3c', '#3498db', '#f1c40f', '#2ecc71', '#9b59b6', '#e67e22'];
-        colors.sort(() => Math.random() - 0.5);
+            const colors = ['#e74c3c', '#3498db', '#f1c40f', '#2ecc71', '#9b59b6', '#e67e22'];
+            colors.sort(() => Math.random() - 0.5);
 
-        sortedNumbers.forEach((number, index) => {
-            setTimeout(() => {
-                const lottoBall = document.createElement('lotto-ball');
-                lottoBall.setAttribute('number', number);
-                lottoBall.setAttribute('color-hex', colors[index]);
-                lottoNumbersContainer.appendChild(lottoBall);
-            }, index * 250);
+            sortedNumbers.forEach((number, index) => {
+                setTimeout(() => {
+                    const lottoBall = document.createElement('lotto-ball');
+                    lottoBall.setAttribute('number', number);
+                    lottoBall.setAttribute('color-hex', colors[index]);
+                    lottoNumbersContainer.appendChild(lottoBall);
+                }, index * 250);
+            });
         });
-    });
+    }
 });

@@ -19,10 +19,12 @@ body {
     background: var(--bg-color-dark);
     color: var(--text-color-dark);
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     margin: 0;
+    padding: 40px 0;
     text-align: center;
     background-image: radial-gradient(circle at top right, rgba(121, 68, 154, 0.15), transparent),
                       radial-gradient(circle at bottom left, rgba(45, 128, 208, 0.15), transparent);
@@ -36,9 +38,10 @@ body.light-mode {
 }
 
 .theme-switcher-container {
-    position: absolute;
+    position: fixed;
     top: 20px;
     right: 20px;
+    z-index: 1000;
 }
 
 #theme-switcher {
@@ -66,6 +69,9 @@ body.light-mode {
     border: 1px solid var(--container-border-dark);
     backdrop-filter: blur(10px);
     transition: background 0.3s, border 0.3s;
+    width: 90%;
+    max-width: 600px;
+    margin-bottom: 40px;
 }
 
 body.light-mode .container {
@@ -83,11 +89,17 @@ h1 {
     transition: text-shadow 0.3s;
 }
 
+h2 {
+    font-size: 2em;
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
 body.light-mode h1 {
     text-shadow: var(--h1-shadow-light);
 }
 
-#generator-btn {
+#generator-btn, #submit-btn, #nav-contact-btn {
     background: #49c6e5;
     color: #fff;
     padding: 15px 32px;
@@ -106,9 +118,47 @@ body.light-mode h1 {
     outline: none;
 }
 
-#generator-btn:hover {
+#generator-btn:hover, #submit-btn:hover, #nav-contact-btn:hover {
     transform: translateY(-3px);
     box-shadow: 0 0 30px rgba(73, 198, 229, 0.8);
+}
+
+#nav-contact-btn {
+    margin: 10px 0;
+    font-size: 14px;
+    padding: 12px 25px;
+}
+
+.back-link {
+    color: var(--text-color-dark);
+    text-decoration: none;
+    font-size: 0.9em;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+}
+
+body.light-mode .back-link {
+    color: var(--text-color-light);
+}
+
+.back-link:hover {
+    opacity: 1;
+}
+
+#submit-btn {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.comments-section {
+    text-align: left;
+    margin-top: 20px;
+}
+
+.comments-section h3 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.5em;
 }
 
 #lotto-numbers-container {
@@ -121,4 +171,57 @@ body.light-mode h1 {
 
 lotto-ball {
     margin: 0 12px; /* Increase spacing between balls */
+}
+
+/* Contact Form Styles */
+.contact-section {
+    text-align: left;
+}
+
+.contact-section h2 {
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+.form-group input, 
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1px solid var(--container-border-dark);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-color-dark);
+    font-family: inherit;
+    font-size: 1em;
+    box-sizing: border-box;
+    transition: border-color 0.3s, background 0.3s;
+}
+
+body.light-mode .form-group input, 
+body.light-mode .form-group textarea {
+    border: 1px solid var(--container-border-light);
+    background: rgba(0, 0, 0, 0.02);
+    color: var(--text-color-light);
+}
+
+.form-group input:focus, 
+.form-group textarea:focus {
+    outline: none;
+    border-color: #49c6e5;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+body.light-mode .form-group input:focus, 
+body.light-mode .form-group textarea:focus {
+    background: rgba(0, 0, 0, 0.05);
 }
