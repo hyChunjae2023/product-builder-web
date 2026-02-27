@@ -1,4 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Variable Declarations
+    const TM_URL = "https://teachablemachine.withgoogle.com/models/GRZnprcWV/";
+    let model, webcam, labelContainer, maxPredictions;
+    let currentLang = localStorage.getItem('preferred-lang') || 'ko';
+
+    const startBtn = document.getElementById('start-test-btn');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const webcamContainer = document.getElementById('webcam-container');
+    const imagePreview = document.getElementById('image-preview');
+    const imageUpload = document.getElementById('image-upload');
+    const uploadTriggerBtn = document.getElementById('upload-trigger-btn');
+    const cameraControls = document.getElementById('camera-controls');
+    const fileControls = document.getElementById('file-controls');
+    const modeCameraBtn = document.getElementById('mode-camera-btn');
+    const modeFileBtn = document.getElementById('mode-file-btn');
+
     // Translations
     const translations = {
         ko: {
@@ -69,8 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    let currentLang = localStorage.getItem('preferred-lang') || 'ko';
-
     function updateLanguage() {
         // Text content translation
         const elements = document.querySelectorAll('[data-i18n]');
@@ -91,15 +105,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Title translation
-        const titleKey = document.querySelector('title').getAttribute('data-i18n');
-        if (titleKey && translations[currentLang][titleKey]) {
-            document.title = translations[currentLang][titleKey];
+        const titleTag = document.querySelector('title');
+        if (titleTag) {
+            const titleKey = titleTag.getAttribute('data-i18n');
+            if (titleKey && translations[currentLang][titleKey]) {
+                document.title = translations[currentLang][titleKey];
+            }
         }
 
         localStorage.setItem('preferred-lang', currentLang);
 
         // Update result labels if they exist
-        if (typeof labelContainer !== 'undefined' && labelContainer && typeof model !== 'undefined' && model) {
+        if (labelContainer && model) {
             const resultLabels = labelContainer.querySelectorAll('.result-label');
             resultLabels.forEach((label, i) => {
                 const originalLabel = model.getClassLabels()[i];
@@ -107,9 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
-
-    // Initial language set
-    updateLanguage();
 
     const langSwitcher = document.getElementById('lang-switcher');
     if (langSwitcher) {
@@ -126,58 +140,47 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Teachable Machine Logic
-    const URL = "https://teachablemachine.withgoogle.com/models/GRZnprcWV/";
-    let model, webcam, labelContainer, maxPredictions;
-
-    const startBtn = document.getElementById('start-test-btn');
-    const loadingSpinner = document.getElementById('loading-spinner');
-    const webcamContainer = document.getElementById('webcam-container');
-    const imagePreview = document.getElementById('image-preview');
-    const imageUpload = document.getElementById('image-upload');
-    const uploadTriggerBtn = document.getElementById('upload-trigger-btn');
-    const cameraControls = document.getElementById('camera-controls');
-    const fileControls = document.getElementById('file-controls');
-    const modeCameraBtn = document.getElementById('mode-camera-btn');
-    const modeFileBtn = document.getElementById('mode-file-btn');
-
     if (modeCameraBtn && modeFileBtn) {
-        // Mode selection logic
         modeCameraBtn.addEventListener('click', () => {
             modeCameraBtn.classList.add('active');
             modeFileBtn.classList.remove('active');
-            cameraControls.classList.remove('hidden');
-            fileControls.classList.add('hidden');
-            webcamContainer.classList.remove('hidden');
-            imagePreview.classList.add('hidden');
+            if (cameraControls) cameraControls.classList.remove('hidden');
+            if (fileControls) fileControls.classList.add('hidden');
+            if (webcamContainer) webcamContainer.classList.remove('hidden');
+            if (imagePreview) imagePreview.classList.add('hidden');
             if (webcam) webcam.play();
         });
 
         modeFileBtn.addEventListener('click', () => {
             modeFileBtn.classList.add('active');
             modeCameraBtn.classList.remove('active');
-            fileControls.classList.remove('hidden');
-            cameraControls.classList.add('hidden');
-            imagePreview.classList.remove('hidden');
-            webcamContainer.classList.add('hidden');
+            if (fileControls) fileControls.classList.remove('hidden');
+            if (cameraControls) cameraControls.classList.add('hidden');
+            if (imagePreview) imagePreview.classList.remove('hidden');
+            if (webcamContainer) webcamContainer.classList.add('hidden');
             if (webcam) webcam.stop();
         });
     }
 
     async function loadModel() {
         if (!model) {
-            loadingSpinner.classList.remove('hidden');
-            const modelURL = URL + "model.json";
-            const metadataURL = URL + "metadata.json";
-            model = await tmImage.load(modelURL, metadataURL);
-            maxPredictions = model.getTotalClasses();
-            loadingSpinner.classList.add('hidden');
-            createLabelContainer();
+            if (loadingSpinner) loadingSpinner.classList.remove('hidden');
+            const modelURL = TM_URL + "model.json";
+            const metadataURL = TM_URL + "metadata.json";
+            try {
+                model = await tmImage.load(modelURL, metadataURL);
+                maxPredictions = model.getTotalClasses();
+                createLabelContainer();
+            } catch (e) {
+                console.error("Model load failed", e);
+            }
+            if (loadingSpinner) loadingSpinner.classList.add('hidden');
         }
     }
 
     function createLabelContainer() {
         labelContainer = document.getElementById("label-container");
+        if (!labelContainer) return;
         labelContainer.innerHTML = '';
         for (let i = 0; i < maxPredictions; i++) {
             const originalLabel = model.getClassLabels()[i];
@@ -196,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function initWebcam() {
         await loadModel();
-        cameraControls.classList.add('hidden');
+        if (cameraControls) cameraControls.classList.add('hidden');
 
         try {
             const flip = true; 
@@ -204,11 +207,14 @@ document.addEventListener('DOMContentLoaded', () => {
             await webcam.setup(); 
             await webcam.play();
             window.requestAnimationFrame(loop);
-            webcamContainer.appendChild(webcam.canvas);
+            if (webcamContainer) {
+                webcamContainer.innerHTML = '';
+                webcamContainer.appendChild(webcam.canvas);
+            }
         } catch (error) {
             console.error("Error starting webcam:", error);
             alert(translations[currentLang]["camera-error"]);
-            cameraControls.classList.remove('hidden');
+            if (cameraControls) cameraControls.classList.remove('hidden');
         }
     }
 
@@ -229,7 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (node) {
                 const bar = node.querySelector('.result-bar-fill');
                 const percentText = node.querySelector('.result-percentage');
-                
                 if (bar) bar.style.width = percentage + "%";
                 if (percentText) percentText.innerHTML = percentage + "%";
             }
@@ -240,14 +245,11 @@ document.addEventListener('DOMContentLoaded', () => {
         startBtn.addEventListener('click', initWebcam);
     }
 
-    // File upload logic
     if (uploadTriggerBtn && imageUpload) {
         uploadTriggerBtn.addEventListener('click', () => imageUpload.click());
-
         imageUpload.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = async (event) => {
                 if (imagePreview) {
@@ -268,67 +270,44 @@ document.addEventListener('DOMContentLoaded', () => {
             super();
             this.attachShadow({ mode: 'open' });
         }
-
         connectedCallback() {
             const number = this.getAttribute('number');
             const backgroundColor = this.getAttribute('color-hex') || '#2ecc71';
-
             this.shadowRoot.innerHTML = `
                 <style>
                     .ball {
-                        width: 60px;
-                        height: 60px;
-                        border-radius: 50%;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        color: white;
-                        font-size: 28px;
-                        font-weight: 700;
-                        background-color: ${backgroundColor};
+                        width: 60px; height: 60px; border-radius: 50%; display: flex;
+                        justify-content: center; align-items: center; color: white;
+                        font-size: 28px; font-weight: 700; background-color: ${backgroundColor};
                         background-image: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 60%);
-                        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), 
-                                    inset 0 -8px 15px rgba(0, 0, 0, 0.2);
-                        text-shadow: 0 1px 3px rgba(0,0,0,0.4);
-                        animation: pop-in 0.5s ease-out forwards;
+                        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), inset 0 -8px 15px rgba(0, 0, 0, 0.2);
+                        text-shadow: 0 1px 3px rgba(0,0,0,0.4); animation: pop-in 0.5s ease-out forwards;
                     }
-
-                    @keyframes pop-in {
-                        from {
-                            transform: scale(0);
-                            opacity: 0;
-                        }
-                        to {
-                            transform: scale(1);
-                            opacity: 1;
-                        }
-                    }
+                    @keyframes pop-in { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
                 </style>
-                <div class="ball">
-                    <span>${number}</span>
-                </div>
+                <div class="ball"><span>${number}</span></div>
             `;
         }
     }
 
-    customElements.define('lotto-ball', LottoBall);
+    if (!customElements.get('lotto-ball')) {
+        customElements.define('lotto-ball', LottoBall);
+    }
 
     const generatorBtn = document.getElementById('generator-btn');
     if (generatorBtn) {
         generatorBtn.addEventListener('click', () => {
             const lottoNumbersContainer = document.getElementById('lotto-numbers-container');
+            if (!lottoNumbersContainer) return;
             lottoNumbersContainer.innerHTML = '';
             const numbers = new Set();
             while (numbers.size < 6) {
                 const randomNumber = Math.floor(Math.random() * 45) + 1;
                 numbers.add(randomNumber);
             }
-            
             const sortedNumbers = Array.from(numbers).sort((a, b) => a - b);
-
             const colors = ['#e74c3c', '#3498db', '#f1c40f', '#2ecc71', '#9b59b6', '#e67e22'];
             colors.sort(() => Math.random() - 0.5);
-
             sortedNumbers.forEach((number, index) => {
                 setTimeout(() => {
                     const lottoBall = document.createElement('lotto-ball');
@@ -339,4 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+
+    // Initial language set
+    updateLanguage();
 });
