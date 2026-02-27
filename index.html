@@ -7,23 +7,46 @@
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="theme-switcher-container">
         <button id="theme-switcher">Toggle Mode</button>
     </div>
+    
     <div class="container">
-        <h1>Lotto Number Generator</h1>
-        <button id="generator-btn">Generate Numbers</button>
+        <h1>동물상 테스트</h1>
+        <p class="subtitle">강아지, 고양이, 고슴도치 중 당신은 어떤 동물상인가요?</p>
+        
+        <div class="test-container">
+            <div id="webcam-container"></div>
+            <button id="start-test-btn">테스트 시작하기</button>
+            <div id="loading-spinner" class="hidden">
+                <div class="spinner"></div>
+                <p>모델을 불러오는 중...</p>
+            </div>
+            <div id="label-container"></div>
+        </div>
+
+        <div style="margin-top: 40px; border-top: 1px solid var(--container-border-dark); padding-top: 30px;">
+            <p style="font-size: 0.9em; opacity: 0.7; margin-bottom: 15px;">다른 도구: <a href="#" id="show-lotto" style="color: #49c6e5; text-decoration: none; font-weight: 600;">로또 번호 생성기</a></p>
+        </div>
+    </div>
+
+    <div class="container lotto-section hidden">
+        <h1>로또 번호 생성기</h1>
+        <button id="generator-btn">번호 생성하기</button>
         <div id="lotto-numbers-container"></div>
         
         <div style="margin-top: 40px; border-top: 1px solid var(--container-border-dark); padding-top: 30px;">
+            <p style="font-size: 0.9em; opacity: 0.7; margin-bottom: 15px;">다른 도구: <a href="#" id="show-animal" style="color: #49c6e5; text-decoration: none; font-weight: 600;">동물상 테스트</a></p>
             <p style="font-size: 0.9em; opacity: 0.7; margin-bottom: 15px;">비즈니스 협업을 원하시나요?</p>
             <a href="contact.html" id="nav-contact-btn">제휴 문의하기</a>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <script src="main.js"></script>
 </body>
 </html>

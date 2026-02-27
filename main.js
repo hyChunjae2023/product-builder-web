@@ -4,6 +4,94 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.toggle('light-mode');
     });
 
+    // Navigation logic
+    const showLottoBtn = document.getElementById('show-lotto');
+    const showAnimalBtn = document.getElementById('show-animal');
+    const lottoSection = document.querySelector('.lotto-section');
+    const animalSection = document.querySelector('.container:not(.lotto-section)');
+
+    showLottoBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        lottoSection.classList.remove('hidden');
+        animalSection.classList.add('hidden');
+    });
+
+    showAnimalBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        animalSection.classList.remove('hidden');
+        lottoSection.classList.add('hidden');
+    });
+
+    // Teachable Machine Logic
+    const URL = "https://teachablemachine.withgoogle.com/models/GRZnprcWV/";
+    let model, webcam, labelContainer, maxPredictions;
+
+    const startBtn = document.getElementById('start-test-btn');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const webcamContainer = document.getElementById('webcam-container');
+
+    async function init() {
+        startBtn.classList.add('hidden');
+        loadingSpinner.classList.remove('hidden');
+
+        const modelURL = URL + "model.json";
+        const metadataURL = URL + "metadata.json";
+
+        try {
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
+
+            const flip = true; 
+            webcam = new tmImage.Webcam(200, 200, flip); 
+            await webcam.setup(); 
+            await webcam.play();
+            window.requestAnimationFrame(loop);
+
+            loadingSpinner.classList.add('hidden');
+            webcamContainer.appendChild(webcam.canvas);
+            
+            labelContainer = document.getElementById("label-container");
+            for (let i = 0; i < maxPredictions; i++) {
+                const resultBar = document.createElement("div");
+                resultBar.className = "result-bar-container";
+                resultBar.innerHTML = `
+                    <div class="result-label">${model.getClassLabels()[i]}</div>
+                    <div class="result-bar-bg">
+                        <div class="result-bar-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="result-percentage">0%</div>
+                `;
+                labelContainer.appendChild(resultBar);
+            }
+        } catch (error) {
+            console.error("Error starting webcam:", error);
+            alert("카메라를 시작할 수 없습니다. 권한을 확인해주세요.");
+            startBtn.classList.remove('hidden');
+            loadingSpinner.classList.add('hidden');
+        }
+    }
+
+    async function loop() {
+        webcam.update();
+        await predict();
+        window.requestAnimationFrame(loop);
+    }
+
+    async function predict() {
+        const prediction = await model.predict(webcam.canvas);
+        for (let i = 0; i < maxPredictions; i++) {
+            const percentage = (prediction[i].probability * 100).toFixed(0);
+            const bar = labelContainer.childNodes[i].querySelector('.result-bar-fill');
+            const percentText = labelContainer.childNodes[i].querySelector('.result-percentage');
+            
+            bar.style.width = percentage + "%";
+            percentText.innerHTML = percentage + "%";
+        }
+    }
+
+    startBtn.addEventListener('click', init);
+
+    // Lotto Logic
     class LottoBall extends HTMLElement {
         constructor() {
             super();

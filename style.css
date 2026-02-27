@@ -15,7 +15,7 @@
 }
 
 body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
     background: var(--bg-color-dark);
     color: var(--text-color-dark);
     display: flex;
@@ -37,11 +37,111 @@ body.light-mode {
     background-image: none;
 }
 
-.theme-switcher-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
+.hidden {
+    display: none !important;
+}
+
+.subtitle {
+    font-size: 1.1em;
+    margin-bottom: 30px;
+    opacity: 0.8;
+}
+
+.test-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+#webcam-container {
+    width: 200px;
+    height: 200px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.2);
+    border: 3px solid #49c6e5;
+    box-shadow: 0 0 20px rgba(73, 198, 229, 0.3);
+}
+
+#webcam-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+}
+
+#label-container {
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.result-bar-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 10px 15px;
+    box-sizing: border-box;
+    transition: background 0.3s;
+}
+
+body.light-mode .result-bar-container {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.result-label {
+    width: 80px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+.result-bar-bg {
+    flex-grow: 1;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    margin: 0 15px;
+    overflow: hidden;
+}
+
+body.light-mode .result-bar-bg {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.result-bar-fill {
+    height: 100%;
+    background: #49c6e5;
+    width: 0%;
+    transition: width 0.3s ease-out;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(73, 198, 229, 0.5);
+}
+
+.result-percentage {
+    width: 50px;
+    text-align: right;
+    font-size: 0.9em;
+    font-weight: 700;
+}
+
+/* Spinner Styles */
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(73, 198, 229, 0.1);
+    border-left-color: #49c6e5;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 10px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 #theme-switcher {
