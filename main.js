@@ -221,37 +221,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function predict(inputMedia) {
-        if (!model) return;
+        if (!model || !labelContainer) return;
         const prediction = await model.predict(inputMedia);
         for (let i = 0; i < maxPredictions; i++) {
             const percentage = (prediction[i].probability * 100).toFixed(0);
-            const bar = labelContainer.childNodes[i].querySelector('.result-bar-fill');
-            const percentText = labelContainer.childNodes[i].querySelector('.result-percentage');
-            
-            bar.style.width = percentage + "%";
-            percentText.innerHTML = percentage + "%";
+            const node = labelContainer.childNodes[i];
+            if (node) {
+                const bar = node.querySelector('.result-bar-fill');
+                const percentText = node.querySelector('.result-percentage');
+                
+                if (bar) bar.style.width = percentage + "%";
+                if (percentText) percentText.innerHTML = percentage + "%";
+            }
         }
     }
 
-    startBtn.addEventListener('click', initWebcam);
+    if (startBtn) {
+        startBtn.addEventListener('click', initWebcam);
+    }
 
     // File upload logic
-    uploadTriggerBtn.addEventListener('click', () => imageUpload.click());
+    if (uploadTriggerBtn && imageUpload) {
+        uploadTriggerBtn.addEventListener('click', () => imageUpload.click());
 
-    imageUpload.addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
+        imageUpload.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
 
-        const reader = new FileReader();
-        reader.onload = async (event) => {
-            imagePreview.src = event.target.result;
-            imagePreview.onload = async () => {
-                await loadModel();
-                await predict(imagePreview);
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                if (imagePreview) {
+                    imagePreview.src = event.target.result;
+                    imagePreview.onload = async () => {
+                        await loadModel();
+                        await predict(imagePreview);
+                    };
+                }
             };
-        };
-        reader.readAsDataURL(file);
-    });
+            reader.readAsDataURL(file);
+        });
+    }
 
     // Lotto Logic
     class LottoBall extends HTMLElement {
