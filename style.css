@@ -47,14 +47,34 @@ body.light-mode {
     opacity: 0.8;
 }
 
-.test-container {
+.test-mode-selector {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
-#webcam-container {
+.test-mode-selector button {
+    background: transparent;
+    color: var(--text-color-dark);
+    border: 2px solid #49c6e5;
+    padding: 8px 15px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+body.light-mode .test-mode-selector button {
+    color: var(--text-color-light);
+}
+
+.test-mode-selector button.active {
+    background: #49c6e5;
+    color: #fff;
+}
+
+#media-container {
     width: 200px;
     height: 200px;
     border-radius: 20px;
@@ -62,12 +82,43 @@ body.light-mode {
     background: rgba(0, 0, 0, 0.2);
     border: 3px solid #49c6e5;
     box-shadow: 0 0 20px rgba(73, 198, 229, 0.3);
+    margin: 0 auto;
+}
+
+#webcam-container, #image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#image-preview {
+    display: block;
+}
+
+#image-preview.hidden {
+    display: none;
 }
 
 #webcam-container canvas {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover;
+}
+
+#camera-controls, #file-controls {
+    margin-top: 20px;
+}
+
+#upload-trigger-btn {
+    background: #49c6e5;
+    color: #fff;
+    padding: 15px 32px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(73, 198, 229, 0.6);
+    transition: all 0.3s ease;
+    font-weight: 600;
 }
 
 #label-container {

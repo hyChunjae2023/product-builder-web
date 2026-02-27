@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
             "contact-btn": "제휴 문의하기",
             "toggle-mode": "테마 변경",
             "camera-error": "카메라를 시작할 수 없습니다. 권한을 확인해주세요.",
+            "mode-camera": "카메라",
+            "mode-file": "파일 업로드",
+            "upload-image": "이미지 선택하기",
             "Dog": "강아지",
             "Cat": "고양이",
             "Hedgehog": "고슴도치"
@@ -33,6 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
             "contact-btn": "Contact Us",
             "toggle-mode": "Toggle Mode",
             "camera-error": "Cannot start camera. Please check permissions.",
+            "mode-camera": "Camera",
+            "mode-file": "File Upload",
+            "upload-image": "Select Image",
             "Dog": "Dog",
             "Cat": "Cat",
             "Hedgehog": "Hedgehog"
@@ -81,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         lottoSection.classList.remove('hidden');
         animalSection.classList.add('hidden');
+        if (webcam) webcam.stop();
     });
 
     showAnimalBtn.addEventListener('click', (e) => {
@@ -96,56 +103,94 @@ document.addEventListener('DOMContentLoaded', () => {
     const startBtn = document.getElementById('start-test-btn');
     const loadingSpinner = document.getElementById('loading-spinner');
     const webcamContainer = document.getElementById('webcam-container');
+    const imagePreview = document.getElementById('image-preview');
+    const imageUpload = document.getElementById('image-upload');
+    const uploadTriggerBtn = document.getElementById('upload-trigger-btn');
+    const cameraControls = document.getElementById('camera-controls');
+    const fileControls = document.getElementById('file-controls');
+    const modeCameraBtn = document.getElementById('mode-camera-btn');
+    const modeFileBtn = document.getElementById('mode-file-btn');
 
-    async function init() {
-        startBtn.classList.add('hidden');
-        loadingSpinner.classList.remove('hidden');
+    // Mode selection logic
+    modeCameraBtn.addEventListener('click', () => {
+        modeCameraBtn.classList.add('active');
+        modeFileBtn.classList.remove('active');
+        cameraControls.classList.remove('hidden');
+        fileControls.classList.add('hidden');
+        webcamContainer.classList.remove('hidden');
+        imagePreview.classList.add('hidden');
+        if (webcam) webcam.play();
+    });
 
-        const modelURL = URL + "model.json";
-        const metadataURL = URL + "metadata.json";
+    modeFileBtn.addEventListener('click', () => {
+        modeFileBtn.classList.add('active');
+        modeCameraBtn.classList.remove('active');
+        fileControls.classList.remove('hidden');
+        cameraControls.classList.add('hidden');
+        imagePreview.classList.remove('hidden');
+        webcamContainer.classList.add('hidden');
+        if (webcam) webcam.stop();
+    });
 
-        try {
+    async function loadModel() {
+        if (!model) {
+            loadingSpinner.classList.remove('hidden');
+            const modelURL = URL + "model.json";
+            const metadataURL = URL + "metadata.json";
             model = await tmImage.load(modelURL, metadataURL);
             maxPredictions = model.getTotalClasses();
+            loadingSpinner.classList.add('hidden');
+            createLabelContainer();
+        }
+    }
 
+    function createLabelContainer() {
+        labelContainer = document.getElementById("label-container");
+        labelContainer.innerHTML = '';
+        for (let i = 0; i < maxPredictions; i++) {
+            const originalLabel = model.getClassLabels()[i];
+            const resultBar = document.createElement("div");
+            resultBar.className = "result-bar-container";
+            resultBar.innerHTML = `
+                <div class="result-label">${translations[currentLang][originalLabel] || originalLabel}</div>
+                <div class="result-bar-bg">
+                    <div class="result-bar-fill" style="width: 0%"></div>
+                </div>
+                <div class="result-percentage">0%</div>
+            `;
+            labelContainer.appendChild(resultBar);
+        }
+    }
+
+    async function initWebcam() {
+        await loadModel();
+        cameraControls.classList.add('hidden');
+
+        try {
             const flip = true; 
             webcam = new tmImage.Webcam(200, 200, flip); 
             await webcam.setup(); 
             await webcam.play();
             window.requestAnimationFrame(loop);
-
-            loadingSpinner.classList.add('hidden');
             webcamContainer.appendChild(webcam.canvas);
-            
-            labelContainer = document.getElementById("label-container");
-            for (let i = 0; i < maxPredictions; i++) {
-                const resultBar = document.createElement("div");
-                resultBar.className = "result-bar-container";
-                resultBar.innerHTML = `
-                    <div class="result-label">${model.getClassLabels()[i]}</div>
-                    <div class="result-bar-bg">
-                        <div class="result-bar-fill" style="width: 0%"></div>
-                    </div>
-                    <div class="result-percentage">0%</div>
-                `;
-                labelContainer.appendChild(resultBar);
-            }
         } catch (error) {
             console.error("Error starting webcam:", error);
-            alert("카메라를 시작할 수 없습니다. 권한을 확인해주세요.");
-            startBtn.classList.remove('hidden');
-            loadingSpinner.classList.add('hidden');
+            alert(translations[currentLang]["camera-error"]);
+            cameraControls.classList.remove('hidden');
         }
     }
 
     async function loop() {
-        webcam.update();
-        await predict();
-        window.requestAnimationFrame(loop);
+        if (webcam && !webcam.paused) {
+            webcam.update();
+            await predict(webcam.canvas);
+            window.requestAnimationFrame(loop);
+        }
     }
 
-    async function predict() {
-        const prediction = await model.predict(webcam.canvas);
+    async function predict(inputMedia) {
+        if (!model) return;
+        const prediction = await model.predict(inputMedia);
         for (let i = 0; i < maxPredictions; i++) {
             const percentage = (prediction[i].probability * 100).toFixed(0);
             const bar = labelContainer.childNodes[i].querySelector('.result-bar-fill');
@@ -156,7 +201,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    startBtn.addEventListener('click', init);
+    startBtn.addEventListener('click', initWebcam);
+
+    // File upload logic
+    uploadTriggerBtn.addEventListener('click', () => imageUpload.click());
+
+    imageUpload.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            imagePreview.src = event.target.result;
+            imagePreview.onload = async () => {
+                await loadModel();
+                await predict(imagePreview);
+            };
+        };
+        reader.readAsDataURL(file);
+    });
 
     // Lotto Logic
     class LottoBall extends HTMLElement {
