@@ -112,34 +112,19 @@ document.addEventListener('DOMContentLoaded', () => {
     updateLanguage();
 
     const langSwitcher = document.getElementById('lang-switcher');
-    langSwitcher.addEventListener('click', () => {
-        currentLang = currentLang === 'ko' ? 'en' : 'ko';
-        updateLanguage();
-    });
+    if (langSwitcher) {
+        langSwitcher.addEventListener('click', () => {
+            currentLang = currentLang === 'ko' ? 'en' : 'ko';
+            updateLanguage();
+        });
+    }
 
     const themeSwitcher = document.getElementById('theme-switcher');
-    themeSwitcher.addEventListener('click', () => {
-        document.body.classList.toggle('light-mode');
-    });
-
-    // Navigation logic
-    const showLottoBtn = document.getElementById('show-lotto');
-    const showAnimalBtn = document.getElementById('show-animal');
-    const lottoSection = document.querySelector('.lotto-section');
-    const animalSection = document.querySelector('.container:not(.lotto-section)');
-
-    showLottoBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        lottoSection.classList.remove('hidden');
-        animalSection.classList.add('hidden');
-        if (webcam) webcam.stop();
-    });
-
-    showAnimalBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        animalSection.classList.remove('hidden');
-        lottoSection.classList.add('hidden');
-    });
+    if (themeSwitcher) {
+        themeSwitcher.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+        });
+    }
 
     // Teachable Machine Logic
     const URL = "https://teachablemachine.withgoogle.com/models/GRZnprcWV/";
@@ -156,26 +141,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const modeCameraBtn = document.getElementById('mode-camera-btn');
     const modeFileBtn = document.getElementById('mode-file-btn');
 
-    // Mode selection logic
-    modeCameraBtn.addEventListener('click', () => {
-        modeCameraBtn.classList.add('active');
-        modeFileBtn.classList.remove('active');
-        cameraControls.classList.remove('hidden');
-        fileControls.classList.add('hidden');
-        webcamContainer.classList.remove('hidden');
-        imagePreview.classList.add('hidden');
-        if (webcam) webcam.play();
-    });
+    if (modeCameraBtn && modeFileBtn) {
+        // Mode selection logic
+        modeCameraBtn.addEventListener('click', () => {
+            modeCameraBtn.classList.add('active');
+            modeFileBtn.classList.remove('active');
+            cameraControls.classList.remove('hidden');
+            fileControls.classList.add('hidden');
+            webcamContainer.classList.remove('hidden');
+            imagePreview.classList.add('hidden');
+            if (webcam) webcam.play();
+        });
 
-    modeFileBtn.addEventListener('click', () => {
-        modeFileBtn.classList.add('active');
-        modeCameraBtn.classList.remove('active');
-        fileControls.classList.remove('hidden');
-        cameraControls.classList.add('hidden');
-        imagePreview.classList.remove('hidden');
-        webcamContainer.classList.add('hidden');
-        if (webcam) webcam.stop();
-    });
+        modeFileBtn.addEventListener('click', () => {
+            modeFileBtn.classList.add('active');
+            modeCameraBtn.classList.remove('active');
+            fileControls.classList.remove('hidden');
+            cameraControls.classList.add('hidden');
+            imagePreview.classList.remove('hidden');
+            webcamContainer.classList.add('hidden');
+            if (webcam) webcam.stop();
+        });
+    }
 
     async function loadModel() {
         if (!model) {
