@@ -144,7 +144,16 @@ body.light-mode .result-bar-bg {
     to { transform: rotate(360deg); }
 }
 
-#theme-switcher {
+.top-controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    gap: 10px;
+}
+
+#theme-switcher, #lang-switcher {
     background: #49c6e5;
     color: #fff;
     padding: 10px 20px;
@@ -154,9 +163,10 @@ body.light-mode .result-bar-bg {
     box-shadow: 0 0 10px rgba(73, 198, 229, 0.6);
     transition: all 0.3s ease;
     outline: none;
+    font-weight: 600;
 }
 
-#theme-switcher:hover {
+#theme-switcher:hover, #lang-switcher:hover {
     transform: translateY(-2px);
     box-shadow: 0 0 20px rgba(73, 198, 229, 0.8);
 }

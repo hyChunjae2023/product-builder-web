@@ -1,4 +1,71 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Translations
+    const translations = {
+        ko: {
+            "animal-title": "동물상 테스트",
+            "animal-subtitle": "강아지, 고양이, 고슴도치 중 당신은 어떤 동물상인가요?",
+            "start-test": "테스트 시작하기",
+            "loading-model": "모델을 불러오는 중...",
+            "other-tool": "다른 도구:",
+            "lotto-nav": "로또 번호 생성기",
+            "lotto-title": "로또 번호 생성기",
+            "generate-btn": "번호 생성하기",
+            "animal-nav": "동물상 테스트",
+            "collab-ask": "비즈니스 협업을 원하시나요?",
+            "contact-btn": "제휴 문의하기",
+            "toggle-mode": "테마 변경",
+            "camera-error": "카메라를 시작할 수 없습니다. 권한을 확인해주세요.",
+            "Dog": "강아지",
+            "Cat": "고양이",
+            "Hedgehog": "고슴도치"
+        },
+        en: {
+            "animal-title": "Animal Face Test",
+            "animal-subtitle": "Dog, Cat, or Hedgehog - which animal face do you have?",
+            "start-test": "Start Test",
+            "loading-model": "Loading model...",
+            "other-tool": "Other Tool:",
+            "lotto-nav": "Lotto Generator",
+            "lotto-title": "Lotto Number Generator",
+            "generate-btn": "Generate Numbers",
+            "animal-nav": "Animal Face Test",
+            "collab-ask": "Want to collaborate?",
+            "contact-btn": "Contact Us",
+            "toggle-mode": "Toggle Mode",
+            "camera-error": "Cannot start camera. Please check permissions.",
+            "Dog": "Dog",
+            "Cat": "Cat",
+            "Hedgehog": "Hedgehog"
+        }
+    };
+
+    let currentLang = 'ko';
+
+    function updateLanguage() {
+        const elements = document.querySelectorAll('[data-i18n]');
+        elements.forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (translations[currentLang][key]) {
+                el.textContent = translations[currentLang][key];
+            }
+        });
+
+        // Update result labels if they exist
+        if (labelContainer && model) {
+            const resultLabels = labelContainer.querySelectorAll('.result-label');
+            resultLabels.forEach((label, i) => {
+                const originalLabel = model.getClassLabels()[i];
+                label.textContent = translations[currentLang][originalLabel] || originalLabel;
+            });
+        }
+    }
+
+    const langSwitcher = document.getElementById('lang-switcher');
+    langSwitcher.addEventListener('click', () => {
+        currentLang = currentLang === 'ko' ? 'en' : 'ko';
+        updateLanguage();
+    });
+
     const themeSwitcher = document.getElementById('theme-switcher');
     themeSwitcher.addEventListener('click', () => {
         document.body.classList.toggle('light-mode');
