@@ -20,7 +20,19 @@ document.addEventListener('DOMContentLoaded', () => {
             "upload-image": "이미지 선택하기",
             "Dog": "강아지",
             "Cat": "고양이",
-            "Hedgehog": "고슴도치"
+            "Hedgehog": "고슴도치",
+            "contact-title": "제휴 문의 - 로또 번호 생성기",
+            "contact-h2": "제휴 문의",
+            "contact-p": "제휴 및 협력 제안을 남겨주시면 검토 후 연락드리겠습니다.",
+            "label-name": "이름",
+            "label-email": "이메일",
+            "label-message": "문의 내용",
+            "placeholder-name": "성함을 입력해주세요",
+            "placeholder-email": "이메일 주소를 입력해주세요",
+            "placeholder-message": "문의하실 내용을 입력해주세요",
+            "submit-btn": "보내기",
+            "back-to-main": "← 메인으로 돌아가기",
+            "comments-title": "댓글"
         },
         en: {
             "animal-title": "Animal Face Test",
@@ -41,13 +53,26 @@ document.addEventListener('DOMContentLoaded', () => {
             "upload-image": "Select Image",
             "Dog": "Dog",
             "Cat": "Cat",
-            "Hedgehog": "Hedgehog"
+            "Hedgehog": "Hedgehog",
+            "contact-title": "Contact Us - Lotto Generator",
+            "contact-h2": "Contact Us",
+            "contact-p": "Please leave your partnership or collaboration proposals, and we will get back to you after review.",
+            "label-name": "Name",
+            "label-email": "Email",
+            "label-message": "Message",
+            "placeholder-name": "Please enter your name",
+            "placeholder-email": "Please enter your email address",
+            "placeholder-message": "Please enter your inquiry",
+            "submit-btn": "Send",
+            "back-to-main": "← Back to Main",
+            "comments-title": "Comments"
         }
     };
 
-    let currentLang = 'ko';
+    let currentLang = localStorage.getItem('preferred-lang') || 'ko';
 
     function updateLanguage() {
+        // Text content translation
         const elements = document.querySelectorAll('[data-i18n]');
         elements.forEach(el => {
             const key = el.getAttribute('data-i18n');
@@ -56,8 +81,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        // Placeholder translation
+        const placeholders = document.querySelectorAll('[data-i18n-placeholder]');
+        placeholders.forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (translations[currentLang][key]) {
+                el.placeholder = translations[currentLang][key];
+            }
+        });
+
+        // Title translation
+        const titleKey = document.querySelector('title').getAttribute('data-i18n');
+        if (titleKey && translations[currentLang][titleKey]) {
+            document.title = translations[currentLang][titleKey];
+        }
+
+        localStorage.setItem('preferred-lang', currentLang);
+
         // Update result labels if they exist
-        if (labelContainer && model) {
+        if (typeof labelContainer !== 'undefined' && labelContainer && typeof model !== 'undefined' && model) {
             const resultLabels = labelContainer.querySelectorAll('.result-label');
             resultLabels.forEach((label, i) => {
                 const originalLabel = model.getClassLabels()[i];
@@ -65,6 +107,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
+
+    // Initial language set
+    updateLanguage();
 
     const langSwitcher = document.getElementById('lang-switcher');
     langSwitcher.addEventListener('click', () => {

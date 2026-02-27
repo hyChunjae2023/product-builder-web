@@ -3,42 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>제휴 문의 - Lotto Number Generator</title>
+    <title data-i18n="contact-title">제휴 문의 - Lotto Number Generator</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="theme-switcher-container">
-        <button id="theme-switcher">Toggle Mode</button>
+    <div class="top-controls">
+        <button id="lang-switcher">EN / KO</button>
+        <button id="theme-switcher" data-i18n="toggle-mode">Toggle Mode</button>
     </div>
 
     <div class="container contact-section">
-        <h2>제휴 문의</h2>
-        <p style="margin-bottom: 30px; opacity: 0.8;">제휴 및 협력 제안을 남겨주시면 검토 후 연락드리겠습니다.</p>
+        <h2 data-i18n="contact-h2">제휴 문의</h2>
+        <p style="margin-bottom: 30px; opacity: 0.8;" data-i18n="contact-p">제휴 및 협력 제안을 남겨주시면 검토 후 연락드리겠습니다.</p>
         <form action="https://formspree.io/f/mnjbwzdq" method="POST" id="contact-form">
             <div class="form-group">
-                <label for="name">이름</label>
-                <input type="text" name="name" id="name" required placeholder="성함을 입력해주세요">
+                <label for="name" data-i18n="label-name">이름</label>
+                <input type="text" name="name" id="name" required placeholder="성함을 입력해주세요" data-i18n-placeholder="placeholder-name">
             </div>
             <div class="form-group">
-                <label for="email">이메일</label>
-                <input type="email" name="_replyto" id="email" required placeholder="이메일 주소를 입력해주세요">
+                <label for="email" data-i18n="label-email">이메일</label>
+                <input type="email" name="_replyto" id="email" required placeholder="이메일 주소를 입력해주세요" data-i18n-placeholder="placeholder-email">
             </div>
             <div class="form-group">
-                <label for="message">문의 내용</label>
-                <textarea name="message" id="message" required placeholder="문의하실 내용을 입력해주세요" rows="8"></textarea>
+                <label for="message" data-i18n="label-message">문의 내용</label>
+                <textarea name="message" id="message" required placeholder="문의하실 내용을 입력해주세요" rows="8" data-i18n-placeholder="placeholder-message"></textarea>
             </div>
-            <button type="submit" id="submit-btn">보내기</button>
+            <button type="submit" id="submit-btn" data-i18n="submit-btn">보내기</button>
         </form>
         <div style="margin-top: 30px;">
-            <a href="index.html" class="back-link">← 메인으로 돌아가기</a>
+            <a href="index.html" class="back-link" data-i18n="back-to-main">← 메인으로 돌아가기</a>
         </div>
     </div>
 
     <div class="container comments-section">
-        <h3>댓글</h3>
+        <h3 data-i18n="comments-title">댓글</h3>
         <div id="disqus_thread"></div>
         <script>
             /**
